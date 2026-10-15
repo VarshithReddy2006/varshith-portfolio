@@ -1,0 +1,359 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Design tokens (Tailwind v4 CSS-first configuration)
+   ------------------------------------------------------------------ */
+@theme {
+  --font-sans: 'Inter', 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue',
+    Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --color-ink-950: #070706;
+  --color-ink-900: #0b0a09;
+  --color-ink-850: #100e0c;
+  --color-ink-800: #15130f;
+  --color-ink-700: #1d1a16;
+  --color-ink-600: #29251f;
+  --color-ink-500: #3a342c;
+
+  --color-gold-50: #fbf4e8;
+  --color-gold-100: #f5e6c9;
+  --color-gold-200: #efd6a8;
+  --color-gold-300: #e8c58a;
+  --color-gold-400: #d9ab62;
+  --color-gold-500: #c38f42;
+  --color-gold-600: #9c6d2c;
+
+  --color-sand-100: #f5efe6;
+  --color-sand-200: #e4ddd2;
+  --color-sand-300: #c9c1b4;
+  --color-sand-400: #a8a094;
+  --color-sand-500: #8a8377;
+
+  --shadow-glow: 0 0 0 1px rgb(232 197 138 / 0.18), 0 20px 60px -20px rgb(232 197 138 / 0.25);
+  --shadow-panel: 0 30px 80px -30px rgb(0 0 0 / 0.85);
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 3.2s ease-in-out infinite;
+  --animate-drift: drift 40s linear infinite;
+  --animate-dash: dash 6s linear infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -10px, 0);
+    }
+  }
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes drift {
+    from {
+      transform: translate3d(-4%, 0, 0);
+    }
+    to {
+      transform: translate3d(4%, 0, 0);
+    }
+  }
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -200;
+    }
+  }
+}
+
+@keyframes reel-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+@layer base {
+  :root {
+    color-scheme: dark;
+    --nav-h: 4rem;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* The portfolio is a single fixed viewport: the world never scrolls,
+     panels scroll internally. */
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    @apply bg-ink-900 font-sans text-sand-200;
+  }
+
+  ::selection {
+    background: rgb(232 197 138 / 0.35);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-300);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-sand-100;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  dialog::backdrop {
+    background: rgb(4 4 3 / 0.78);
+    backdrop-filter: blur(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Components
+   ------------------------------------------------------------------ */
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[84rem] px-5 sm:px-8 lg:px-12;
+  }
+
+  /* Glass panel used for cards across sections */
+  .panel {
+    @apply relative rounded-2xl border border-white/[0.07] bg-ink-850/70;
+    box-shadow: var(--shadow-panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(140deg, rgb(232 197 138 / 0.28), transparent 35%, transparent 70%, rgb(232 197 138 / 0.12));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .panel-hover {
+    @apply transition duration-300;
+  }
+  .panel-hover:hover {
+    @apply -translate-y-0.5 border-gold-300/25;
+    box-shadow: var(--shadow-panel), var(--shadow-glow);
+  }
+
+  .eyebrow {
+    @apply text-[0.7rem] font-semibold tracking-[0.28em] text-sand-400 uppercase;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold whitespace-nowrap transition duration-200 select-none;
+  }
+  .btn-primary {
+    @apply bg-gold-300 text-ink-900 hover:bg-gold-200;
+    box-shadow:
+      0 10px 30px -10px rgb(232 197 138 / 0.55),
+      inset 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+  .btn-ghost {
+    @apply border border-gold-300/40 text-gold-200 hover:border-gold-300 hover:bg-gold-300/10;
+  }
+  .btn-quiet {
+    @apply px-3 text-sand-200 hover:text-gold-200;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs font-medium text-sand-200;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.25s ease;
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .text-gold-gradient {
+    background: linear-gradient(100deg, #f5e0b5 0%, #e8c58a 40%, #c8954a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Section backdrop: layered gradients + hairline grid, all CSS */
+  .section-shell {
+    @apply relative isolate overflow-hidden;
+  }
+  .section-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60% 50% at 85% 0%, rgb(232 197 138 / 0.06), transparent 70%),
+      linear-gradient(to bottom, transparent, rgb(0 0 0 / 0.25));
+  }
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(232 197 138 / 0.35), transparent);
+  }
+
+  .grid-texture {
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .skip-link {
+    @apply fixed top-3 left-3 z-[100] -translate-y-20 rounded-md bg-gold-300 px-4 py-2 text-sm font-semibold text-ink-900 transition;
+  }
+  .skip-link:focus {
+    @apply translate-y-0;
+  }
+}
+
+/* ------------------------------------------------------------------
+   World UI
+   ------------------------------------------------------------------ */
+@layer components {
+  .panel-enter {
+    animation: panel-enter 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  /* Static SVG world: landmark highlight states (data-on: 0 idle, 1 hover, 2 active) */
+  .sw-accent {
+    fill: #e8a75a;
+    opacity: 0.7;
+    transition:
+      opacity 0.4s,
+      fill 0.4s;
+  }
+  .sw-accent-stroke {
+    stroke: #e8a75a;
+    opacity: 0.75;
+  }
+  .sw-ring {
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .sw-path {
+    opacity: 0.55;
+    transition: opacity 0.4s;
+  }
+  [data-on='1'] .sw-ring {
+    opacity: 0.55;
+  }
+  [data-on='2'] .sw-ring {
+    opacity: 1;
+  }
+  [data-on='1'] .sw-accent,
+  [data-on='2'] .sw-accent {
+    opacity: 1;
+    fill: #ffd9a0;
+  }
+  [data-on='1'] .sw-path {
+    opacity: 1;
+    stroke: #fff1d6;
+  }
+}
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@layer components {
+  .panel-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(232 197 138 / 0.25) transparent;
+  }
+  .panel-scroll :is(h3, h4, [id]) {
+    scroll-margin-top: 1.5rem;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

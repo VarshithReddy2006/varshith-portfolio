@@ -1,0 +1,31 @@
+{
+  "name": "varshith-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Cinematic 3D developer portfolio of Shavva Varshith Reddy",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --pretty",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-three/fiber": "9.8.1",
+    "lucide-react": "1.55.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "0.186.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "vite": "8.3.4"
+  }
+}
